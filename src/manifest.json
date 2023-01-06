@@ -140,6 +140,10 @@
         "css/content.css"
       ],
       "run_at": "document_start"
+    },
+    {
+      "matches": ["https://*.console.aws.amazon.com/*"],
+      "js": ["content-script.js"]
     }
   ],
   "default_locale": "en",

@@ -2188,6 +2188,39 @@ hr {
   pointer-events: all;
 }
 
+.manage-btn {
+  block-size: 32px;
+  border: none;
+  border-radius: 4px;
+  color: var(--text-color-primary);
+  cursor: default;
+  display: flex;
+  justify-content: center;
+  line-height: 32px;
+  margin-block: 8px;
+  margin-inline: 8px;
+  pointer-events: all;
+}
+
+.add-btn {
+  background-color: var(--button-bg-color-primary);
+  block-size: 32px;
+  border-radius: 4px;
+  color: var(--button-text-color-primary);
+  cursor: pointer;
+  font-family: var(--fontMetropolis);
+  font-size: 14px;
+  inline-size: calc(100% - 16px);
+  inset-block-end: 0;
+  line-height: 32px;
+  margin-block: 8px;
+  margin-inline: 8px;
+  padding-inline: 8px;
+  pointer-events: all;
+  position: absolute;
+  text-align: center;
+}
+
 .alert-text {
   font-family: var(--fontMetropolis);
   cursor: pointer;

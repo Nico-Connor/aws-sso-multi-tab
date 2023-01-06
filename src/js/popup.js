@@ -355,7 +355,7 @@ const Logic = {
   },
 
   generateIdentityName() {
-    const defaultName = "Container #";
+    const defaultName = "AWS ACCOUNT #";
     const ids = [];
 
     // This loop populates the 'ids' array with all the already-used ids.
@@ -689,11 +689,13 @@ Logic.registerPanel(P_CONTAINERS_LIST, {
 
   // This method is called when the object is registered.
   async initialize() {
-    await browser.runtime.sendMessage({ method: "MozillaVPN_queryStatus" });
     Utils.addEnterHandler(document.querySelector("#manage-containers-link"), (e) => {
       if (!e.target.classList.contains("disable-edit-containers")) {
         Logic.showPanel(MANAGE_CONTAINERS_PICKER);
       }
+    });
+    Utils.addEnterHandler(document.querySelector("#add-container-btn"), () => {
+      Logic.showPanel(P_CONTAINER_EDIT, { name: Logic.generateIdentityName() });
     });
     Utils.addEnterHandler(document.querySelector("#reopen-site-in"), () => {
       Logic.showPanel(REOPEN_IN_CONTAINER_PICKER);
@@ -1266,7 +1268,7 @@ Logic.registerPanel(REOPEN_IN_CONTAINER_PICKER, {
           <div class="mac-icon">
           </div>
         </div>
-        <span class="menu-text">Default Container</span>`;
+        <span class="menu-text">No Container</span>`;
 
       fragment.appendChild(tr);
 
