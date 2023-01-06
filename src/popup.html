@@ -120,13 +120,6 @@
       </tr>
     </table>
     <hr>
-    <div class="sub-header-wrapper flx-row flx-space-between">
-      <div class="sub-header" data-i18n-message-id="containers"></div>
-      <h4 class="moz-vpn-logotype vpn-status-container-list display-none">Mozilla VPN
-        <span class="moz-vpn-connection-status-indicator container-list-status-icon">
-        </span>
-      </h4>
-    </div>
     <div class="scrollable identities-list">
       <div class="searchbar">
         <label for="search-terms"
@@ -162,7 +155,7 @@
       </table>
     </div>
     <v-padding-hack-footer></v-padding-hack-footer> <!--prevents last container from getting covered up by the 'manage containers button' when list is long-->
-    <div class="bottom-btn keyboard-nav controller" id="manage-containers-link" tabindex="0" data-i18n-message-id="manageContainers"></div>
+    <div class="bottom-btn keyboard-nav controller" id="manage-containers-link" tabindex="0">Manage AWS containers</div>
   </div>
 
 
@@ -183,14 +176,6 @@
         <td>
           <img class="menu-icon" alt="" src="/img/movetowindow-16.svg" />
           <span class="menu-text" data-i18n-message-id="moveTabsToANewWindow"></span>
-            <span class="menu-arrow">
-            </span>
-        </td>
-      </tr>
-      <tr class="menu-item hover-highlight keyboard-nav" id="always-open" tabindex="0">
-        <td>
-          <img class="menu-icon" alt="" src="/img/container-openin-16.svg" />
-          <span class="menu-text" id="always-open-in-info-panel" data-i18n-message-id="alwaysOpenSiteInContainer"></span>
             <span class="menu-arrow">
             </span>
         </td>
@@ -271,47 +256,8 @@
           <input type="text" class="proxies" name="city-name" id="city-name-input" maxlength="5" hidden/>
         </fieldset>
       </form>
-      <div id="edit-container-options">
-        <div class="options-header" data-i18n-message-id="options"></div>
-        <div class="container-options">
-          <label for="site-isolation" class="options-label" data-i18n-message-id="limitToDesignatedSites"></label>
-          <label class="switch">
-            <input id="site-isolation" class="switch-input" name="site-isolation" type="checkbox">
-            <span class="slider round"></span>
-          </label>
-        </div>
-        <button class="container-options blue-link" id="manage-assigned-sites-list" tabindex="0" data-i18n-message-id="manageSiteList"></button>
-      </div>
     </div>
-    <moz-vpn-container-ui class="moz-vpn-controller-content expanded">
-      <div class="flx-row button-wrapper">
-        <h4 class="moz-vpn-logotype">Mozilla VPN
-          <span class="moz-vpn-connection-status-indicator"></span>
-        </h4>
-        <button class="expand-collapse blue-link" tab-index="0">
-          <span data-i18n-message-id="hide"  class="hide-label hide-show-label"></span>
-          <span data-i18n-message-id="show" class="show-label hide-show-label"></span>
-        </button>
-      </div>
-      <div class="collapsible-content flx-col controller-collapsible-conten">
-          <div class="flx-row flx-space-between add-bg-color">
-            <span class="moz-vpn-subtitle"></span>
-            <label class="switch">
-              <input id="moz-vpn-switch" class="moz-vpn-switch switch-input" type="checkbox">
-              <span class="slider round"></span>
-            </label>
-          </div>
-        <button id="get-mozilla-vpn" class="moz-vpn-cta primary-cta" data-i18n-message-id="getMozillaVpn"></button>
-        <button id="moz-vpn-current-server" class="controller">
-          <span class="current-country-flag"></span>
-          <span class="current-city-name"></span>
-        </button>
-      </div>
-    </moz-vpn-container-ui>
-    <button id="advanced-proxy-settings-btn" class="proxy-section advanced-proxy-settings-btn">
-      <span class="advanced-proxy-settings-btn-label" data-i18n-message-id="advancedProxySettings"></span>
-      <span id="advanced-proxy-address"></span>
-    </button>
+
     <hr>
     <button class="delete-container delete-btn alert-text" id="delete-container-button" data-i18n-message-id="deleteThisContainer"></button>
 
