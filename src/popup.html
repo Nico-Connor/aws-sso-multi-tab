@@ -71,12 +71,8 @@
       <a id="moz-vpn-fw-onboarding-done" href="#" class="half-onboarding-button keyboard-nav onboarding-done" tabindex="0" data-i18n-message-id="done"></a>
     </div>
     <div class="moz-vpn-permissions">
-      <div class="moz-vpn-permissions-copy">
-        <span data-i18n-message-id="mozillaVpnRequiresAdditionalPermissions"></span>
-      </div>
       <div class="half-button-wrapper">
         <a href="#" id="permissions-not-now" class="half-onboarding-button grey-button keyboard-nav onboarding-done" tabindex="0" data-i18n-message-id="notNow"></a>
-        <a href="#" id="onboarding-enable-permissions" class="half-onboarding-button keyboard-nav" tabindex="0" data-i18n-message-id="enable"></a>
       </div>
     </div>
   </div>
@@ -191,18 +187,6 @@
         </tr>
       </table>
     </div>
-    <div id="moz-vpn-tout" class="moz-vpn-content expanded">
-      <div class="flx-row button-wrapper">
-        <h4 class="moz-vpn-logo">Mozilla VPN</h4>
-        <button class="controller dismiss-moz-vpn-tout" tab-index="0"></button>
-      </div>
-      <div class="collapsible-content flx-col controller-collapsible-content">
-        <div class="flx-row flx-space-between">
-          <span class="moz-vpn-subtitle" data-i18n-message-id="integrateContainers"></span>
-        </div>
-        <button id="moz-vpn-learn-more" class="moz-vpn-cta primary-cta" data-i18n-message-id="getMozillaVpn"></button>
-      </div>
-    </div>
     <v-padding-hack-footer></v-padding-hack-footer> <!--prevents last container from getting covered up by the 'manage containers button' when list is long-->
     <div class="bottom-btn keyboard-nav controller" id="manage-containers-link" tabindex="0" data-i18n-message-id="manageContainers"></div>
   </div>
@@ -301,6 +285,11 @@
           <legend class="form-header" data-i18n-message-id="name"></legend>
           <v-padding-hack-4></v-padding-hack-4>
           <input type="text" name="container-name" id="edit-container-panel-name-input" class="edit-container-panel-name-input" maxlength="25"/>
+          <v-padding-hack-4></v-padding-hack-4>
+          <v-padding-hack-4></v-padding-hack-4>
+          <legend class="form-header">AWS Management URL</legend>
+          <v-padding-hack-4></v-padding-hack-4>
+          <input type="text" name="container-name" id="AWS-management-URL" class="AWS-management-URL"/>
         </fieldset>
         <legend class="form-header" data-i18n-message-id="color"></legend>
         <fieldset id="edit-container-panel-choose-color" class="radio-choice">

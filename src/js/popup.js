@@ -116,7 +116,7 @@ const Logic = {
       break;
     case 0:
     default:
-      this.showPanel(P_ONBOARDING_1);
+      this.showPanel(P_ONBOARDING_8);
       break;
     }
 
@@ -497,7 +497,11 @@ Logic.registerPanel(P_ONBOARDING_1, {
     [...document.querySelectorAll(".onboarding-start-button")].forEach(startElement => {
       Utils.addEnterHandler(startElement, async () => {
         await Logic.setOnboardingStage(1);
-        Logic.showPanel(P_ONBOARDING_2);
+        await browser.storage.local.set({syncEnabled: false});
+        await browser.runtime.sendMessage({
+          method: "resetSync"
+        });
+        Logic.showPanel(P_ONBOARDING_8);
       });
     });
   },
@@ -677,13 +681,6 @@ Logic.registerPanel(P_ONBOARDING_8, {
     if (!mozillaVpnPermissionsEnabled) {
       const panel = document.querySelector(".onboarding-panel-8");
       panel.classList.add("optional-permissions-disabled");
-
-      Utils.addEnterHandler(panel.querySelector("#onboarding-enable-permissions"), async () => {
-        const granted = await browser.permissions.request({ permissions: ["proxy", "nativeMessaging"] });
-        if (granted) {
-          await Logic.setOnboardingStage(8);
-        }
-      });
     }
     return Promise.resolve(null);
   },
@@ -807,6 +804,7 @@ Logic.registerPanel(P_CONTAINERS_LIST, {
           <span class="menu-text">${identity.name}</span>
         </div>
         <span class="menu-right-float">
+          <button type="button" class="junky">NewToken</button>
           <img alt="" class="always-open-in-flag flag-img" src="/img/flags/.png"/>
           <span class="container-count">${openTabs}</span>
           <span class="menu-arrow">
@@ -830,6 +828,23 @@ Logic.registerPanel(P_CONTAINERS_LIST, {
         try {
           browser.tabs.create({
             cookieStoreId: identity.cookieStoreId
+          });
+          window.close();
+        } catch (e) {
+          window.close();
+        }
+      });
+
+      const generateNewToken = tr.querySelector(".junky");
+      Utils.addEnterHandler(generateNewToken, (e) => {
+        e.preventDefault();
+        if (generateNewToken.dataset.mozProxyWarning === "proxy-unavailable") {
+          return;
+        }
+        try {
+          browser.tabs.create({
+            cookieStoreId: identity.cookieStoreId,
+            url: "https://d-9d672ab324.awsapps.com/start/#/saml/custom/516340956680%20%28neo-data-integration%29/OTc4OTQ5MjE0NTQ1X2lucy1iYTU1ZjVhZDg3MzdlMjQyX3AtODZiZjU0MTkyNzg0YmJkNw%3D%3D"
           });
           window.close();
         } catch (e) {
@@ -1822,6 +1837,7 @@ Logic.registerPanel(P_CONTAINER_EDIT, {
     editedIdentity.color = formValues.get("container-color") || DEFAULT_COLOR;
     editedIdentity.icon = formValues.get("container-icon") || DEFAULT_ICON;
     editedIdentity.name = document.getElementById("edit-container-panel-name-input").value || Logic.generateIdentityName();
+    
     return editedIdentity;
   },
 
@@ -1877,6 +1893,7 @@ Logic.registerPanel(P_CONTAINER_EDIT, {
     });
 
     document.querySelector("#edit-container-panel-name-input").value = identity.name || "";
+    
     document.querySelector("#edit-container-panel-usercontext-input").value = userContextId || NEW_CONTAINER_ID;
     const containerName = document.querySelector("#edit-container-panel-name-input");
     window.requestAnimationFrame(() => {
