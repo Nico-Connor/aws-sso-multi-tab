@@ -705,9 +705,6 @@ Logic.registerPanel(P_CONTAINERS_LIST, {
         Logic.showPanel(MANAGE_CONTAINERS_PICKER);
       }
     });
-    Utils.addEnterHandler(document.querySelector("#open-new-tab-in"), () => {
-      Logic.showPanel(OPEN_NEW_CONTAINER_PICKER);
-    });
     Utils.addEnterHandler(document.querySelector("#reopen-site-in"), () => {
       Logic.showPanel(REOPEN_IN_CONTAINER_PICKER);
     });
@@ -944,17 +941,6 @@ Logic.registerPanel(P_CONTAINER_INFO, {
   async prepare() {
     const identity = Logic.currentIdentity();
 
-    const newTab = document.querySelector("#open-new-tab-in-info");
-    Utils.addEnterHandler(newTab, () => {
-      try {
-        browser.tabs.create({
-          cookieStoreId: identity.cookieStoreId
-        });
-        window.close();
-      } catch (e) {
-        window.close();
-      }
-    });
     // Populating the panel: name and icon
     document.getElementById("container-info-title").textContent = identity.name;
 
