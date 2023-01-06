@@ -316,6 +316,12 @@ const Logic = {
     return this._currentIdentity;
   },
 
+  currentAWSUrl() {
+    //const containerState = await identityState.storageArea.get(cookieStoreId);
+
+    return "testjunk";//"browser.storage.local.get("testtwo")";
+  },
+
   currentUserContextId() {
     const identity = Logic.currentIdentity();
     return Utils.userContextId(identity.cookieStoreId);
@@ -782,6 +788,7 @@ Logic.registerPanel(P_CONTAINERS_LIST, {
     const identities = Logic.identities();
 
     for (const identity of identities) {
+      const fetchedURL = await browser.runtime.sendMessage({method: "getAWSUrl", cookieStoreId: identity.cookieStoreId }) || "http://jsonviewer.stack.hu/";
       const tr = document.createElement("tr");
       tr.classList.add("menu-item", "hover-highlight", "keyboard-nav", "keyboard-right-arrow-override");
       tr.setAttribute("tabindex", "0");
@@ -804,7 +811,7 @@ Logic.registerPanel(P_CONTAINERS_LIST, {
           <span class="menu-text">${identity.name}</span>
         </div>
         <span class="menu-right-float">
-          <button type="button" class="junky">NewToken</button>
+          <button type="button" class="newToken">NewToken</button>
           <img alt="" class="always-open-in-flag flag-img" src="/img/flags/.png"/>
           <span class="container-count">${openTabs}</span>
           <span class="menu-arrow">
@@ -827,7 +834,8 @@ Logic.registerPanel(P_CONTAINERS_LIST, {
         }
         try {
           browser.tabs.create({
-            cookieStoreId: identity.cookieStoreId
+            cookieStoreId: identity.cookieStoreId,
+            url: fetchedURL
           });
           window.close();
         } catch (e) {
@@ -835,7 +843,7 @@ Logic.registerPanel(P_CONTAINERS_LIST, {
         }
       });
 
-      const generateNewToken = tr.querySelector(".junky");
+      const generateNewToken = tr.querySelector(".newToken");
       Utils.addEnterHandler(generateNewToken, (e) => {
         e.preventDefault();
         if (generateNewToken.dataset.mozProxyWarning === "proxy-unavailable") {
@@ -844,7 +852,7 @@ Logic.registerPanel(P_CONTAINERS_LIST, {
         try {
           browser.tabs.create({
             cookieStoreId: identity.cookieStoreId,
-            url: "https://d-9d672ab324.awsapps.com/start/#/saml/custom/516340956680%20%28neo-data-integration%29/OTc4OTQ5MjE0NTQ1X2lucy1iYTU1ZjVhZDg3MzdlMjQyX3AtODZiZjU0MTkyNzg0YmJkNw%3D%3D"
+            url: fetchedURL
           });
           window.close();
         } catch (e) {
@@ -1808,6 +1816,7 @@ Logic.registerPanel(P_CONTAINER_EDIT, {
         method: "createOrUpdateContainer",
         message: {
           userContextId: formValues.get("container-id") || NEW_CONTAINER_ID,
+          awsURL: document.getElementById("AWS-management-URL").value || "hello",
           params: {
             name: document.getElementById("edit-container-panel-name-input").value || Logic.generateIdentityName(),
             icon: formValues.get("container-icon") || DEFAULT_ICON,
@@ -1837,7 +1846,7 @@ Logic.registerPanel(P_CONTAINER_EDIT, {
     editedIdentity.color = formValues.get("container-color") || DEFAULT_COLOR;
     editedIdentity.icon = formValues.get("container-icon") || DEFAULT_ICON;
     editedIdentity.name = document.getElementById("edit-container-panel-name-input").value || Logic.generateIdentityName();
-    
+    editedIdentity.awsUrl = document.getElementById("AWS-management-URL").value || "nothing";
     return editedIdentity;
   },
 
@@ -1882,6 +1891,7 @@ Logic.registerPanel(P_CONTAINER_EDIT, {
     document.getElementById("container-edit-title").textContent = identity.name;
 
     const userContextId = Logic.currentUserContextId();
+    const fetchedURL = await browser.runtime.sendMessage({method: "getAWSUrl", cookieStoreId: identity.cookieStoreId });
     document.querySelector("#edit-container-panel .panel-footer").hidden = !!userContextId;
     document.querySelector("#edit-container-panel .delete-container").hidden = !userContextId;
     document.querySelector("#edit-container-options").hidden = !userContextId;
@@ -1893,7 +1903,7 @@ Logic.registerPanel(P_CONTAINER_EDIT, {
     });
 
     document.querySelector("#edit-container-panel-name-input").value = identity.name || "";
-    
+    document.querySelector("#AWS-management-URL").value = identity.awsURL || fetchedURL || "nothing";
     document.querySelector("#edit-container-panel-usercontext-input").value = userContextId || NEW_CONTAINER_ID;
     const containerName = document.querySelector("#edit-container-panel-name-input");
     window.requestAnimationFrame(() => {

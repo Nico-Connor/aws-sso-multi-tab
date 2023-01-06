@@ -11,8 +11,11 @@ const messageHandler = {
       let tab;
 
       switch (m.method) {
+      case "getAWSUrl":
+        response = backgroundLogic.getAWSUrl(m.cookieStoreId);
+        break;
       case "getShortcuts":
-        response = identityState.storageArea.loadKeyboardShortcuts();
+        response = identityState.storageArea.loadKeyboardShortcuts(m.shortcut);
         break;
       case "setShortcut":
         identityState.storageArea.setKeyboardShortcut(m.shortcut, m.cookieStoreId);

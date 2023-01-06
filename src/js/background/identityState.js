@@ -175,7 +175,8 @@ window.identityState = {
   _createIdentityState() {
     return {
       hiddenTabs: [],
-      macAddonUUID: uuidv4()
+      macAddonUUID: uuidv4(),
+      test : "test3"
     };
   },
 

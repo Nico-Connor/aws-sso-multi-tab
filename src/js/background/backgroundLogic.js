@@ -82,6 +82,7 @@ const backgroundLogic = {
   },
 
   async createOrUpdateContainer(options) {
+    await this.storeAWSUrl(options.userContextId, options.awsURL);
     if (options.userContextId !== "new") {
       return await browser.contextualIdentities.update(
         this.cookieStoreId(options.userContextId),
@@ -153,6 +154,20 @@ const backgroundLogic = {
 
     const containerState = await identityState.storageArea.get(cookieStoreId);
     return list.concat(containerState.hiddenTabs);
+  },
+
+  async storeAWSUrl(userContextId, awsURL) {
+    const cookieStoreId = backgroundLogic.cookieStoreId(userContextId);
+    const containerState = await identityState.storageArea.get(cookieStoreId);
+    containerState.awsURL = String(awsURL);
+    console.log(awsURL);
+    
+    return await identityState.storageArea.set(cookieStoreId, containerState);
+  },
+
+  async getAWSUrl(cookieStoreId) {
+    const containerState = await identityState.storageArea.get(cookieStoreId);
+    return String(containerState.awsURL);
   },
 
   async unhideContainer(cookieStoreId, alreadyShowingUrl) {
@@ -239,6 +254,7 @@ const backgroundLogic = {
     }
 
     containerState.hiddenTabs = [];
+    containerState.test = "test";
 
     // Let's close all the normal tab in the new window. In theory it
     // should be only the first tab, but maybe there are addons doing
