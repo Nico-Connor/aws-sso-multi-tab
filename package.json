@@ -37,6 +37,7 @@
   },
   "scripts": {
     "dev": "web-ext run -s src/",
+    "build": "web-ext build -s src/ --overwrite-dest",
     "lint": "npm-run-all lint:*",
     "lint:addon": "./bin/addons-linter.sh",
     "lint:css": "stylelint src/css/*.css",

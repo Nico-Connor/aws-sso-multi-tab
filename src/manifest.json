@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
-  "name": "Firefox Multi-Account Containers",
-  "version": "8.1.1",
+  "name": "AWS Multi-Account Containers",
+  "version": "1",
   "incognito": "not_allowed",
   "description": "__MSG_extensionDescription__",
   "icons": {
@@ -29,12 +29,6 @@
     "nativeMessaging",
     "proxy"
   ],
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "@testpilot-containers",
-      "strict_min_version": "91.1.0"
-    }
-  },
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {
@@ -140,10 +134,6 @@
         "css/content.css"
       ],
       "run_at": "document_start"
-    },
-    {
-      "matches": ["https://*.console.aws.amazon.com/*"],
-      "js": ["content-script.js"]
     }
   ],
   "default_locale": "en",
