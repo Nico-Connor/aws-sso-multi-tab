@@ -239,6 +239,7 @@ const Logic = {
         identity.numberOfHiddenTabs = stateObject.numberOfHiddenTabs;
         identity.numberOfOpenTabs = stateObject.numberOfOpenTabs;
         identity.isIsolated = stateObject.isIsolated;
+        identity.awsURL = stateObject.awsURL;
       }
       if (containerOrder) {
         identity.order = containerOrder[identity.cookieStoreId];
@@ -786,94 +787,96 @@ Logic.registerPanel(P_CONTAINERS_LIST, {
 
     for (const identity of identities) {
       const fetchedURL = await browser.runtime.sendMessage({method: "getAWSUrl", cookieStoreId: identity.cookieStoreId }) || "http://jsonviewer.stack.hu/";
-      const tr = document.createElement("tr");
-      tr.classList.add("menu-item", "hover-highlight", "keyboard-nav", "keyboard-right-arrow-override");
-      tr.setAttribute("tabindex", "0");
-      tr.setAttribute("data-cookie-store-id", identity.cookieStoreId);
-      const td = document.createElement("td");
-      const openTabs = identity.numberOfOpenTabs || "" ;
+      if(fetchedURL){
+        const tr = document.createElement("tr");
+        tr.classList.add("menu-item", "hover-highlight", "keyboard-nav", "keyboard-right-arrow-override");
+        tr.setAttribute("tabindex", "0");
+        tr.setAttribute("data-cookie-store-id", identity.cookieStoreId);
+        const td = document.createElement("td");
+        const openTabs = identity.numberOfOpenTabs || "" ;
 
-      // TODO get UX and content decision on how to message and block clicks to containers with Mozilla VPN proxy configs
-      // when Mozilla VPN app is disconnected.
+        // TODO get UX and content decision on how to message and block clicks to containers with Mozilla VPN proxy configs
+        // when Mozilla VPN app is disconnected.
 
-      td.innerHTML = Utils.escaped`
-        <div data-moz-proxy-warning="" class="menu-item-name">
-          <div class="menu-icon">
+        td.innerHTML = Utils.escaped`
+          <div data-moz-proxy-warning="" class="menu-item-name">
+            <div class="menu-icon">
 
-            <div class="usercontext-icon"
-              data-identity-icon="${identity.icon}"
-              data-identity-color="${identity.color}">
+              <div class="usercontext-icon"
+                data-identity-icon="${identity.icon}"
+                data-identity-color="${identity.color}">
+              </div>
             </div>
+            <span class="menu-text">${identity.name}</span>
           </div>
-          <span class="menu-text">${identity.name}</span>
-        </div>
-        <span class="menu-right-float">
-          <button type="button" class="newToken">Login</button>
-          <img alt="" class="always-open-in-flag flag-img" src="/img/flags/.png"/>
-          <span class="container-count">${openTabs}</span>
-          <span class="menu-arrow">
-            <img alt="Container Info" src="/img/arrow-icon-right.svg" />
-          </span>
+          <span class="menu-right-float">
+            <button type="button" class="newToken">Login</button>
+            <img alt="" class="always-open-in-flag flag-img" src="/img/flags/.png"/>
+            <span class="container-count">${openTabs}</span>
+            <span class="menu-arrow">
+              <img alt="Container Info" src="/img/arrow-icon-right.svg" />
+            </span>
 
-        </span>`;
+          </span>`;
 
 
 
-      fragment.appendChild(tr);
+        fragment.appendChild(tr);
 
-      tr.appendChild(td);
+        tr.appendChild(td);
 
-      const openInThisContainer = tr.querySelector(".menu-item-name");
-      Utils.addEnterHandler(openInThisContainer, (e) => {
-        e.preventDefault();
-        if (openInThisContainer.dataset.mozProxyWarning === "proxy-unavailable") {
-          return;
-        }
-        try {
-          browser.tabs.create({
-            cookieStoreId: identity.cookieStoreId,
-            url: "https://console.aws.amazon.com/"
-          });
-          window.close();
-        } catch (e) {
-          window.close();
-        }
-      });
+        const openInThisContainer = tr.querySelector(".menu-item-name");
+        Utils.addEnterHandler(openInThisContainer, (e) => {
+          e.preventDefault();
+          if (openInThisContainer.dataset.mozProxyWarning === "proxy-unavailable") {
+            return;
+          }
+          try {
+            browser.tabs.create({
+              cookieStoreId: identity.cookieStoreId,
+              url: "https://console.aws.amazon.com/"
+            });
+            window.close();
+          } catch (e) {
+            window.close();
+          }
+        });
 
-      const generateNewToken = tr.querySelector(".newToken");
-      Utils.addEnterHandler(generateNewToken, (e) => {
-        e.preventDefault();
-        if (generateNewToken.dataset.mozProxyWarning === "proxy-unavailable") {
-          return;
-        }
-        try {
-          browser.tabs.create({
-            cookieStoreId: identity.cookieStoreId,
-            url: fetchedURL
-          });
-          window.close();
-        } catch (e) {
-          window.close();
-        }
-      });
+        const generateNewToken = tr.querySelector(".newToken");
+        Utils.addEnterHandler(generateNewToken, (e) => {
+          e.preventDefault();
+          if (generateNewToken.dataset.mozProxyWarning === "proxy-unavailable") {
+            return;
+          }
+          try {
+            browser.tabs.create({
+              cookieStoreId: identity.cookieStoreId,
+              url: fetchedURL
+            });
+            window.close();
+          } catch (e) {
+            window.close();
+          }
+        });
 
-      Utils.addEnterOnlyHandler(tr, () => {
-        try {
-          browser.tabs.create({
-            cookieStoreId: identity.cookieStoreId
-          });
-          window.close();
-        } catch (e) {
-          window.close();
-        }
-      });
+        Utils.addEnterOnlyHandler(tr, () => {
+          try {
+            browser.tabs.create({
+              cookieStoreId: identity.cookieStoreId
+            });
+            window.close();
+          } catch (e) {
+            window.close();
+          }
+        });
 
-      // Select only the ">" from the container list
-      const showPanelButton = tr.querySelector(".menu-right-float");
+        // Select only the ">" from the container list
+        const showPanelButton = tr.querySelector(".menu-right-float");
 
-      Utils.addEnterHandler(showPanelButton, () => {
-        Logic.showPanel(P_CONTAINER_INFO, identity);
-      });
+        Utils.addEnterHandler(showPanelButton, () => {
+          Logic.showPanel(P_CONTAINER_INFO, identity);
+        });
+      }
     }
 
     const list = document.querySelector("#identities-list");
@@ -1802,7 +1805,7 @@ Logic.registerPanel(P_CONTAINER_EDIT, {
         method: "createOrUpdateContainer",
         message: {
           userContextId: formValues.get("container-id") || NEW_CONTAINER_ID,
-          awsURL: document.getElementById("AWS-management-URL").value || "hello",
+          awsURL: document.getElementById("AWS-management-URL").value || "",
           params: {
             name: document.getElementById("edit-container-panel-name-input").value || Logic.generateIdentityName(),
             icon: formValues.get("container-icon") || DEFAULT_ICON,
@@ -1832,7 +1835,7 @@ Logic.registerPanel(P_CONTAINER_EDIT, {
     editedIdentity.color = formValues.get("container-color") || DEFAULT_COLOR;
     editedIdentity.icon = formValues.get("container-icon") || DEFAULT_ICON;
     editedIdentity.name = document.getElementById("edit-container-panel-name-input").value || Logic.generateIdentityName();
-    editedIdentity.awsUrl = document.getElementById("AWS-management-URL").value || "nothing";
+    editedIdentity.awsUrl = document.getElementById("AWS-management-URL").value || "";
     return editedIdentity;
   },
 
@@ -1889,7 +1892,7 @@ Logic.registerPanel(P_CONTAINER_EDIT, {
     });
 
     document.querySelector("#edit-container-panel-name-input").value = identity.name || "";
-    document.querySelector("#AWS-management-URL").value = identity.awsURL || fetchedURL || "nothing";
+    document.querySelector("#AWS-management-URL").value = identity.awsURL || fetchedURL || "";
     document.querySelector("#edit-container-panel-usercontext-input").value = userContextId || NEW_CONTAINER_ID;
     const containerName = document.querySelector("#edit-container-panel-name-input");
     window.requestAnimationFrame(() => {

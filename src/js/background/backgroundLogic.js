@@ -82,14 +82,17 @@ const backgroundLogic = {
   },
 
   async createOrUpdateContainer(options) {
-    await this.storeAWSUrl(options.userContextId, options.awsURL);
     if (options.userContextId !== "new") {
+      this.storeAWSUrl(options.userContextId, options.awsURL);
       return await browser.contextualIdentities.update(
         this.cookieStoreId(options.userContextId),
         options.params
       );
+    }else{
+      const returnValue = await browser.contextualIdentities.create(options.params);
+      await this.storeAWSUrlWithCookieStore(returnValue.cookieStoreId, options.awsURL);
+      return returnValue;
     }
-    return await browser.contextualIdentities.create(options.params);
   },
 
   async openNewTab(options) {
@@ -158,12 +161,15 @@ const backgroundLogic = {
 
   async storeAWSUrl(userContextId, awsURL) {
     const cookieStoreId = backgroundLogic.cookieStoreId(userContextId);
+    return this.storeAWSUrlWithCookieStore(cookieStoreId, awsURL);
+  },
+
+  async storeAWSUrlWithCookieStore(cookieStoreId, awsURL) {
     const containerState = await identityState.storageArea.get(cookieStoreId);
     containerState.awsURL = String(awsURL);
-    console.log(awsURL);
-    
     return await identityState.storageArea.set(cookieStoreId, containerState);
   },
+
 
   async getAWSUrl(cookieStoreId) {
     const containerState = await identityState.storageArea.get(cookieStoreId);
@@ -302,7 +308,8 @@ const backgroundLogic = {
         hasOpenTabs: !!openTabs.length,
         numberOfHiddenTabs: containerState.hiddenTabs.length,
         numberOfOpenTabs: openTabs.length,
-        isIsolated: !!containerState.isIsolated
+        isIsolated: !!containerState.isIsolated,
+        awsURL: containerState.awsURL
       };
       return;
     });
