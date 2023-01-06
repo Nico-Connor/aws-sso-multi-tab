@@ -22,7 +22,7 @@ async function init() {
     fragment.appendChild(tr);
 
     Utils.addEnterHandler(tr, async () => {
-      Utils.alwaysOpenInContainer(identity);
+      Utils.moveToContainer(identity);
       window.close();
     });
   }

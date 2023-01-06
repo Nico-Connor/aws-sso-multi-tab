@@ -8,7 +8,6 @@ const messageHandler = {
     // Handles messages from webextension code
     browser.runtime.onMessage.addListener(async (m) => {
       let response;
-      let tab;
 
       switch (m.method) {
       case "getAWSUrl":
@@ -91,22 +90,18 @@ const messageHandler = {
           true
         );
         break;
-      case "assignAndReloadInContainer":
-        tab = await assignManager.reloadPageInContainer(
-          m.url, 
+
+      case "moveTabToContainer":
+        response = assignManager.reloadPageInContainer(
+          m.url,
           m.currentUserContextId,
-          m.newUserContextId, 
-          m.tabIndex, 
+          m.newUserContextId,
+          m.tabIndex,
           m.active,
           true
         );
-        // m.tabId is used for where to place the in content message
-        // m.url is the assignment to be removed/added
-        response = browser.tabs.get(tab.id).then((tab) => {
-          return assignManager._setOrRemoveAssignment(tab.id, m.url, m.newUserContextId, m.value);
-        });
+        browser.tabs.remove( m.oldTabId);
         break;
-
       case "MozillaVPN_attemptPort":
         MozillaVPN_Background.maybeInitPort();
         break;

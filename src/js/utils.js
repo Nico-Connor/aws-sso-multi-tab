@@ -149,25 +149,18 @@ const Utils = {
     });
   },
 
-  async alwaysOpenInContainer(identity) {
+  async moveToContainer(identity) {
     const currentTab = await this.currentTab();
     const assignedUserContextId = this.userContextId(identity.cookieStoreId);
-    if (currentTab.cookieStoreId !== identity.cookieStoreId) {
-      return await browser.runtime.sendMessage({
-        method: "assignAndReloadInContainer",
-        url: currentTab.url,
-        currentUserContextId: false,
-        newUserContextId: assignedUserContextId,
-        tabIndex: currentTab.index +1,
-        active:currentTab.active
-      });
-    }
-    await Utils.setOrRemoveAssignment(
-      currentTab.id,
-      currentTab.url,
-      assignedUserContextId,
-      false
-    );
+    return await browser.runtime.sendMessage({
+      method: "moveTabToContainer",
+      url: currentTab.url,
+      oldTabId: currentTab.id,
+      currentUserContextId: false,
+      newUserContextId: assignedUserContextId,
+      tabIndex: currentTab.index +1,
+      active:currentTab.active
+    });
   },
   /* Theme helper
    *

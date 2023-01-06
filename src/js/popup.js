@@ -811,7 +811,7 @@ Logic.registerPanel(P_CONTAINERS_LIST, {
           <span class="menu-text">${identity.name}</span>
         </div>
         <span class="menu-right-float">
-          <button type="button" class="newToken">NewToken</button>
+          <button type="button" class="newToken">Login</button>
           <img alt="" class="always-open-in-flag flag-img" src="/img/flags/.png"/>
           <span class="container-count">${openTabs}</span>
           <span class="menu-arrow">
@@ -835,7 +835,7 @@ Logic.registerPanel(P_CONTAINERS_LIST, {
         try {
           browser.tabs.create({
             cookieStoreId: identity.cookieStoreId,
-            url: fetchedURL
+            url: "https://console.aws.amazon.com/"
           });
           window.close();
         } catch (e) {

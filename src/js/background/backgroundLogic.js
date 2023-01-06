@@ -254,7 +254,6 @@ const backgroundLogic = {
     }
 
     containerState.hiddenTabs = [];
-    containerState.test = "test";
 
     // Let's close all the normal tab in the new window. In theory it
     // should be only the first tab, but maybe there are addons doing
