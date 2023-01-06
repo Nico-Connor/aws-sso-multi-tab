@@ -139,9 +139,11 @@ const Utils = {
   },
 
   async reloadInContainer(url, currentUserContextId, newUserContextId, tabIndex, active) {
+    const currentTab = await this.currentTab();
     return await browser.runtime.sendMessage({
       method: "reloadInContainer",
       url,
+      oldTabId: currentTab.id,
       currentUserContextId,
       newUserContextId,
       tabIndex,

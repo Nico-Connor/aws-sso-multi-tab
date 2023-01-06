@@ -89,6 +89,7 @@ const messageHandler = {
           m.active,
           true
         );
+        browser.tabs.remove( m.oldTabId);
         break;
 
       case "moveTabToContainer":
