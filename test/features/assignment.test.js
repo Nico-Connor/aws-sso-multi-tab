@@ -14,26 +14,6 @@ describe("Assignment Reopen Feature", function () {
     this.webExt.destroy();
   });
 
-  describe("set to 'Always open in' firefox-container-4", function () {
-    beforeEach(async function () {
-      // popup click to set assignment for activeTab.url
-      await this.webExt.popup.helper.clickElementById("always-open-in");
-      await this.webExt.popup.helper.clickElementByQuerySelectorAll("#picker-identities-list > .menu-item");
-    });
-
-    it("should open the page in the assigned container", async function () {
-      // should have created a new tab with the confirm page
-      this.webExt.background.browser.tabs.create.should.have.been.calledWithMatch({
-        active: true,
-        cookieStoreId: "firefox-container-4",
-        index: 1,
-        openerTabId: null,
-        url: "http://example.com"
-      });
-    });
-
-  });
-
 });
 
 describe("Assignment Comfirm Page Feature", function () {

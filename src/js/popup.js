@@ -26,7 +26,6 @@ const P_CONTAINERS_LIST = "containersList";
 const OPEN_NEW_CONTAINER_PICKER = "new-tab";
 const MANAGE_CONTAINERS_PICKER = "manage";
 const REOPEN_IN_CONTAINER_PICKER = "reopen-in";
-const ALWAYS_OPEN_IN_PICKER = "always-open-in";
 const P_CONTAINER_INFO = "containerInfo";
 const P_CONTAINER_EDIT = "containerEdit";
 const P_CONTAINER_DELETE = "containerDelete";
@@ -709,9 +708,6 @@ Logic.registerPanel(P_CONTAINERS_LIST, {
     Utils.addEnterHandler(document.querySelector("#reopen-site-in"), () => {
       Logic.showPanel(REOPEN_IN_CONTAINER_PICKER);
     });
-    Utils.addEnterHandler(document.querySelector("#always-open-in"), () => {
-      Logic.showPanel(ALWAYS_OPEN_IN_PICKER);
-    });
     Utils.addEnterHandler(document.querySelector("#sort-containers-link"), async () => {
       try {
         await browser.runtime.sendMessage({
@@ -810,7 +806,6 @@ Logic.registerPanel(P_CONTAINERS_LIST, {
           </div>
           <span class="menu-right-float">
             <button type="button" class="newToken">Login</button>
-            <img alt="" class="always-open-in-flag flag-img" src="/img/flags/.png"/>
             <span class="container-count">${openTabs}</span>
             <span class="menu-arrow">
               <img alt="Container Info" src="/img/arrow-icon-right.svg" />
@@ -946,11 +941,6 @@ Logic.registerPanel(P_CONTAINER_INFO, {
     // Populating the panel: name and icon
     document.getElementById("container-info-title").textContent = identity.name;
 
-    const alwaysOpen = document.querySelector("#always-open-in-info-panel");
-    Utils.addEnterHandler(alwaysOpen, async () => {
-      Utils.alwaysOpenInContainer(identity);
-      window.close();
-    });
     // Show or not the has-tabs section.
     for (let trHasTabs of document.getElementsByClassName("container-info-has-tabs")) { // eslint-disable-line prefer-const
       trHasTabs.style.display = !identity.hasHiddenTabs && !identity.hasOpenTabs ? "none" : "";
@@ -1331,60 +1321,6 @@ Logic.registerPanel(REOPEN_IN_CONTAINER_PICKER, {
         }
       }
     });
-
-    const list = document.querySelector("#picker-identities-list");
-
-    list.innerHTML = "";
-    list.appendChild(fragment);
-
-    return Promise.resolve(null);
-  }
-});
-
-// ALWAYS_OPEN_IN_PICKER: Makes the list editable.
-// ----------------------------------------------------------------------------
-
-Logic.registerPanel(ALWAYS_OPEN_IN_PICKER, {
-  panelSelector: "#container-picker-panel",
-
-  // This method is called when the object is registered.
-  initialize() {
-  },
-
-  // This method is called when the panel is shown.
-  async prepare() {
-    const identities = Logic.identities();
-    Logic.listenToPickerBackButton();
-    document.getElementById("picker-title").textContent = browser.i18n.getMessage("alwaysOpenIn");
-    const fragment = document.createDocumentFragment();
-
-    document.getElementById("new-container-div").innerHTML = "";
-
-    for (const identity of identities) {
-      const tr = document.createElement("tr");
-      tr.classList.add("menu-item", "hover-highlight", "keyboard-nav");
-      tr.setAttribute("tabindex", "0");
-      const td = document.createElement("td");
-
-      td.innerHTML = Utils.escaped`
-        <div class="menu-icon hover-highlight">
-          <div class="usercontext-icon"
-            data-identity-icon="${identity.icon}"
-            data-identity-color="${identity.color}">
-          </div>
-        </div>
-        <span class="menu-text">${identity.name}</span>
-        `;
-
-      fragment.appendChild(tr);
-
-      tr.appendChild(td);
-
-      Utils.addEnterHandler(tr, () => {
-        Utils.alwaysOpenInContainer(identity);
-        window.close();
-      });
-    }
 
     const list = document.querySelector("#picker-identities-list");
 
