@@ -786,8 +786,7 @@ Logic.registerPanel(P_CONTAINERS_LIST, {
     const identities = Logic.identities();
 
     for (const identity of identities) {
-      const fetchedURL = await browser.runtime.sendMessage({method: "getAWSUrl", cookieStoreId: identity.cookieStoreId }) || "http://jsonviewer.stack.hu/";
-      if(fetchedURL){
+      if(identity.awsURL && identity.awsURL.startsWith("http")){
         const tr = document.createElement("tr");
         tr.classList.add("menu-item", "hover-highlight", "keyboard-nav", "keyboard-right-arrow-override");
         tr.setAttribute("tabindex", "0");
@@ -851,7 +850,7 @@ Logic.registerPanel(P_CONTAINERS_LIST, {
           try {
             browser.tabs.create({
               cookieStoreId: identity.cookieStoreId,
-              url: fetchedURL
+              url: identity.awsURL
             });
             window.close();
           } catch (e) {
@@ -1079,27 +1078,29 @@ Logic.registerPanel(OPEN_NEW_CONTAINER_PICKER, {
     document.getElementById("new-container-div").innerHTML = "";
 
     Logic.identities().forEach(identity => {
-      const tr = document.createElement("tr");
-      tr.classList.add("menu-item", "hover-highlight", "keyboard-nav");
-      tr.setAttribute("tabindex", "0");
-      const td = document.createElement("td");
+      if(identity.awsURL){
+        const tr = document.createElement("tr");
+        tr.classList.add("menu-item", "hover-highlight", "keyboard-nav");
+        tr.setAttribute("tabindex", "0");
+        const td = document.createElement("td");
 
-      td.innerHTML = Utils.escaped`
-        <div class="menu-icon">
-          <div class="usercontext-icon"
-            data-identity-icon="${identity.icon}"
-            data-identity-color="${identity.color}">
+        td.innerHTML = Utils.escaped`
+          <div class="menu-icon">
+            <div class="usercontext-icon"
+              data-identity-icon="${identity.icon}"
+              data-identity-color="${identity.color}">
+            </div>
           </div>
-        </div>
-        <span class="menu-text">${identity.name}</span>`;
+          <span class="menu-text">${identity.name}</span>`;
 
-      fragment.appendChild(tr);
+        fragment.appendChild(tr);
 
-      tr.appendChild(td);
+        tr.appendChild(td);
 
-      Utils.addEnterHandler(tr, () => {
-        pickedFunction(identity);
-      });
+        Utils.addEnterHandler(tr, () => {
+          pickedFunction(identity);
+        });
+      }
 
     });
 
@@ -1158,77 +1159,79 @@ Logic.registerPanel(MANAGE_CONTAINERS_PICKER, {
     const identities = Logic.identities();
 
     for (const identity of identities) {
-      const tr = document.createElement("tr");
-      tr.classList.add("menu-item", "hover-highlight", "keyboard-nav");
-      tr.setAttribute("tabindex", "0");
-      tr.setAttribute("data-cookie-store-id", identity.cookieStoreId);
+      if(identity.awsURL){
+        const tr = document.createElement("tr");
+        tr.classList.add("menu-item", "hover-highlight", "keyboard-nav");
+        tr.setAttribute("tabindex", "0");
+        tr.setAttribute("data-cookie-store-id", identity.cookieStoreId);
 
-      const td = document.createElement("td");
+        const td = document.createElement("td");
 
-      td.innerHTML = Utils.escaped`
-        <div class="menu-icon hover-highlight">
-          <div class="usercontext-icon"
-            data-identity-icon="${identity.icon}"
-            data-identity-color="${identity.color}">
+        td.innerHTML = Utils.escaped`
+          <div class="menu-icon hover-highlight">
+            <div class="usercontext-icon"
+              data-identity-icon="${identity.icon}"
+              data-identity-color="${identity.color}">
+            </div>
           </div>
-        </div>
-        <span class="menu-text">${identity.name}</span>
-        <img alt="" class="flag-img manage-containers-list-flag" src="/img/flags/.png"/>
-        <span class="move-button">
-          <img
-            class="pop-button-image"
-            src="/img/container-move.svg"
-          />
-        </span>`;
+          <span class="menu-text">${identity.name}</span>
+          <img alt="" class="flag-img manage-containers-list-flag" src="/img/flags/.png"/>
+          <span class="move-button">
+            <img
+              class="pop-button-image"
+              src="/img/container-move.svg"
+            />
+          </span>`;
 
-      fragment.appendChild(tr);
+        fragment.appendChild(tr);
 
-      tr.appendChild(td);
+        tr.appendChild(td);
 
-      tr.draggable = true;
-      tr.dataset.containerId = identity.cookieStoreId;
-      tr.addEventListener("dragstart", (e) => {
-        e.dataTransfer.setData(CONTAINER_DRAG_DATA_TYPE, identity.cookieStoreId);
-      });
-      tr.addEventListener("dragover", (e) => {
-        if (e.dataTransfer.types.includes(CONTAINER_DRAG_DATA_TYPE)) {
-          tr.classList.add("drag-over");
-          e.preventDefault();
-        }
-      });
-      tr.addEventListener("dragenter", (e) => {
-        if (e.dataTransfer.types.includes(CONTAINER_DRAG_DATA_TYPE)) {
-          e.preventDefault();
-          tr.classList.add("drag-over");
-        }
-      });
-      tr.addEventListener("dragleave", (e) => {
-        if (e.dataTransfer.types.includes(CONTAINER_DRAG_DATA_TYPE)) {
-          e.preventDefault();
-          tr.classList.remove("drag-over");
-        }
-      });
-      tr.addEventListener("drop", async (e) => {
-        e.preventDefault();
-        const parent = tr.parentNode;
-        const containerId = e.dataTransfer.getData(CONTAINER_DRAG_DATA_TYPE);
-        let droppedElement;
-        parent.childNodes.forEach((node) => {
-          if (node.dataset.containerId === containerId) {
-            droppedElement = node;
+        tr.draggable = true;
+        tr.dataset.containerId = identity.cookieStoreId;
+        tr.addEventListener("dragstart", (e) => {
+          e.dataTransfer.setData(CONTAINER_DRAG_DATA_TYPE, identity.cookieStoreId);
+        });
+        tr.addEventListener("dragover", (e) => {
+          if (e.dataTransfer.types.includes(CONTAINER_DRAG_DATA_TYPE)) {
+            tr.classList.add("drag-over");
+            e.preventDefault();
           }
         });
-        if (droppedElement && droppedElement !== tr) {
-          tr.classList.remove("drag-over");
-          parent.insertBefore(droppedElement, tr);
-          await Logic.saveContainerOrder(parent.childNodes);
-          await Logic.refreshIdentities();
-        }
-      });
+        tr.addEventListener("dragenter", (e) => {
+          if (e.dataTransfer.types.includes(CONTAINER_DRAG_DATA_TYPE)) {
+            e.preventDefault();
+            tr.classList.add("drag-over");
+          }
+        });
+        tr.addEventListener("dragleave", (e) => {
+          if (e.dataTransfer.types.includes(CONTAINER_DRAG_DATA_TYPE)) {
+            e.preventDefault();
+            tr.classList.remove("drag-over");
+          }
+        });
+        tr.addEventListener("drop", async (e) => {
+          e.preventDefault();
+          const parent = tr.parentNode;
+          const containerId = e.dataTransfer.getData(CONTAINER_DRAG_DATA_TYPE);
+          let droppedElement;
+          parent.childNodes.forEach((node) => {
+            if (node.dataset.containerId === containerId) {
+              droppedElement = node;
+            }
+          });
+          if (droppedElement && droppedElement !== tr) {
+            tr.classList.remove("drag-over");
+            parent.insertBefore(droppedElement, tr);
+            await Logic.saveContainerOrder(parent.childNodes);
+            await Logic.refreshIdentities();
+          }
+        });
 
-      Utils.addEnterHandler(tr, () => {
-        pickedFunction(identity);
-      });
+        Utils.addEnterHandler(tr, () => {
+          pickedFunction(identity);
+        });
+      }
     }
 
     const list = document.querySelector("#picker-identities-list");
@@ -1302,28 +1305,30 @@ Logic.registerPanel(REOPEN_IN_CONTAINER_PICKER, {
     }
 
     Logic.identities().forEach(identity => {
-      if (currentTab.cookieStoreId !== identity.cookieStoreId) {
-        const tr = document.createElement("tr");
-        tr.classList.add("menu-item", "hover-highlight", "keyboard-nav");
-        tr.setAttribute("tabindex", "0");
-        const td = document.createElement("td");
+      if(identity.awsURL){
+        if (currentTab.cookieStoreId !== identity.cookieStoreId) {
+          const tr = document.createElement("tr");
+          tr.classList.add("menu-item", "hover-highlight", "keyboard-nav");
+          tr.setAttribute("tabindex", "0");
+          const td = document.createElement("td");
 
-        td.innerHTML = Utils.escaped`
-        <div class="menu-icon hover-highlight">
-          <div class="usercontext-icon"
-            data-identity-icon="${identity.icon}"
-            data-identity-color="${identity.color}">
+          td.innerHTML = Utils.escaped`
+          <div class="menu-icon hover-highlight">
+            <div class="usercontext-icon"
+              data-identity-icon="${identity.icon}"
+              data-identity-color="${identity.color}">
+            </div>
           </div>
-        </div>
-        <span class="menu-text">${identity.name}</span>`;
+          <span class="menu-text">${identity.name}</span>`;
 
-        fragment.appendChild(tr);
+          fragment.appendChild(tr);
 
-        tr.appendChild(td);
+          tr.appendChild(td);
 
-        Utils.addEnterHandler(tr, () => {
-          pickedFunction(identity);
-        });
+          Utils.addEnterHandler(tr, () => {
+            pickedFunction(identity);
+          });
+        }
       }
     });
 
@@ -1880,7 +1885,6 @@ Logic.registerPanel(P_CONTAINER_EDIT, {
     document.getElementById("container-edit-title").textContent = identity.name;
 
     const userContextId = Logic.currentUserContextId();
-    const fetchedURL = await browser.runtime.sendMessage({method: "getAWSUrl", cookieStoreId: identity.cookieStoreId });
     document.querySelector("#edit-container-panel .panel-footer").hidden = !!userContextId;
     document.querySelector("#edit-container-panel .delete-container").hidden = !userContextId;
     document.querySelector("#edit-container-options").hidden = !userContextId;
@@ -1892,7 +1896,7 @@ Logic.registerPanel(P_CONTAINER_EDIT, {
     });
 
     document.querySelector("#edit-container-panel-name-input").value = identity.name || "";
-    document.querySelector("#AWS-management-URL").value = identity.awsURL || fetchedURL || "";
+    document.querySelector("#AWS-management-URL").value = identity.awsURL || "";
     document.querySelector("#edit-container-panel-usercontext-input").value = userContextId || NEW_CONTAINER_ID;
     const containerName = document.querySelector("#edit-container-panel-name-input");
     window.requestAnimationFrame(() => {
