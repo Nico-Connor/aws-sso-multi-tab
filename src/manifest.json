@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "AWS Multi-Account Containers",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "incognito": "not_allowed",
   "description": "__MSG_extensionDescription__",
   "icons": {
@@ -134,9 +134,18 @@
         "css/content.css"
       ],
       "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "https://*.console.aws.amazon.com/*"
+      ],
+      "js": [
+        "js/aws-overlay-script.js"
+      ]
     }
+
   ],
-  "default_locale": "en",
+  "default_locale": "en_CA",
   "web_accessible_resources": [
     "/img/container-site-d-24.png"
   ],
