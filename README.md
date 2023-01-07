@@ -1,32 +1,33 @@
-# Multi-Account Containers
+# Contributing
 
-[![Test](https://github.com/mozilla/multi-account-containers/actions/workflows/test.yaml/badge.svg)](https://github.com/mozilla/multi-account-containers/actions/workflows/test.yaml)
+> This project is a fork of: https://github.com/mozilla/multi-account-containers
 
-The Firefox Multi-Account Containers extension lets you carve out a separate box for each of your online lives – no more opening a different browser just to check your work email!
+This project is a fork of another project and still contains a lot of the original code, much of it unused. Whenever you get a chance to remove some of the unused legacy code, please do!
 
-Learn more about Multi-Account Containers in
-[our end-user documentation][enduser].
+## Requirements
 
-## Contributing
+- Firefox 91.1.0+
+- Git 2.13+
+- Node 7+
 
-Everyone is welcome to contribute to Multi-Account Containers. To learn how
-to contribute a patch to Multi-Account Container, please
-[read our contributing guide][contributing].
+## Getting Started
 
-You can also chat with us on [our Matrix room][matrix] or [our forum][forum].
+1. Fetch the locales:
 
-This repository is governed by Mozilla's code of conduct and etiquette
-guidelines. For more details, [please read the Mozilla Community Participation Guidelines][cpg].
+   ```
+   cd multi-account-containers
+   git submodule update --init
+   ```
 
-### License
+2. Install the project dependencies
+   ```
+   npm install --legacy-peer-deps
+   ```
+3. Run `npm run dev`.
 
-This Source Code Form is subject to the terms of the Mozilla Public
-License, v. 2.0. If a copy of the MPL was not distributed with this
-file, You can obtain one at https://mozilla.org/MPL/2.0/.
+## Translations
 
-<!-- Please keep the list in alphabetical order -->
-[contributing]: CONTRIBUTING.md
-[cpg]: https://www.mozilla.org/about/governance/policies/participation/
-[enduser]: https://support.mozilla.org/en-US/kb/containers
-[forum]: https://discourse.mozilla.org/c/containers/223
-[matrix]: https://matrix.to/#/#containers:mozilla.org
+The translations are located in `src/_locales`. This directory is a git
+repository (https://github.com/mozilla-l10n/multi-account-containers-l10n/) and is relic from the original forked project.
+
+Whenever possible, replace locales references with inline text.

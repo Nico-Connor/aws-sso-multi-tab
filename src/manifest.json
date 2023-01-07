@@ -1,14 +1,14 @@
 {
   "manifest_version": 2,
   "name": "AWS Multi-Account Containers",
-  "version": "1.1.5",
+  "version": "1.2",
   "incognito": "not_allowed",
-  "description": "__MSG_extensionDescription__",
+  "description": "Manage multiple AWS accounts concurrently in separate tabs",
   "icons": {
     "48": "img/container-site-d-48.png",
     "96": "img/container-site-d-96.png"
   },
-  "homepage_url": "https://github.com/mozilla/multi-account-containers#readme",
+  "homepage_url": "https://github.com/neofinancial/aws-account-name-chrome-extension/tree/master/firefox",
   "permissions": [
     "<all_urls>",
     "activeTab",
@@ -36,66 +36,6 @@
         "mac": "MacCtrl+Period"
       },
       "description": "Open containers panel"
-    },
-    "open_container_0": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+1"
-      },
-      "description": "Container Shortcut 1"
-    },
-    "open_container_1": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+2"
-      },
-      "description": "Container Shortcut 2"
-    },
-    "open_container_2": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+3"
-      },
-      "description": "Container Shortcut 3"
-    },
-    "open_container_3": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+4"
-      },
-      "description": "Container Shortcut 4"
-    },
-    "open_container_4": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+5"
-      },
-      "description": "Container Shortcut 5"
-    },
-    "open_container_5": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+6"
-      },
-      "description": "Container Shortcut 6"
-    },
-    "open_container_6": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+7"
-      },
-      "description": "Container Shortcut 7"
-    },
-    "open_container_7": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+8"
-      },
-      "description": "Container Shortcut 8"
-    },
-    "open_container_8": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+9"
-      },
-      "description": "Container Shortcut 9"
-    },
-    "open_container_9": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+0"
-      },
-      "description": "Container Shortcut 10"
     }
   },
   "browser_action": {
