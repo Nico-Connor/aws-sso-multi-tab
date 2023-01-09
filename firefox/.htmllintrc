@@ -1,8 +1,0 @@
-{
-  "plugins": [],
-
-  "id-class-style": "dash",
-  "indent-style": "spaces",
-  "indent-width": 2,
-  "attr-name-ignore-regex": "http-equiv|data-*"
-}
