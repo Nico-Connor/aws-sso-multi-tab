@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><title>AWS SSO Role Switcher</title></head>
+<body>
+
+<h1>AWS SSO Role Switcher</h1>
+
+<pre id="account-list" style="color:green; max-height: 200px; overflow: scroll"></pre>
+
+<label for="accounts">Accounts (enter one per line, formatted <code>Nickname, SSO URL, Colour (e.g. red, #ffffff)</code>)</label>
+<br/>
+<textarea style="width:100%; min-height: 500px;" id="accounts"></textarea>
+<br/>
+<button id="save">Save</button>
+
+<div>
+    <h3>How it works:</h3>
+    <ol>
+        <li>
+            <p>Grab your desired links from your organization's SSO start page:</p>
+            <ol type="a">
+                <li>Your link should look similar to <code>d-1234567890.awsapps.com/start#</code>.</li>
+                <li>Click the account and role that you want, then copy the address of the "Management Console" link.</li>
+            </ol>
+        </li>
+        <li>
+            <p>Fill out the account box above:</p>
+            <ol type="a">
+                <li>The format of each line should be <code>Nickname,URL,Colour</code>. Hex and named colours are supported.</li>
+                <li>Blank lines will be rendered as dividers.</li>
+            </ol>
+        </li>
+        <li>
+            <p>To switch accounts, open the extension and click on your desired account:</p>
+            <ol type="a">
+                <li>If you're on a new tab, it'll try to open the console in the same tab.</li>
+                <li>If you're on a non-AWS console page, it'll try to open the console in a new tab.</li>
+                <li>If you're on an AWS console page, it'll try to open a tab in the background to switch roles, then automatically close itself and refresh your active tab when it's done. You can interrupt this at any time by closing the extension pop-up.</li>
+            </ol>
+        </li>
+    </ol>
+</div>
+
+<script src="options.js"></script>
+</body>
+</html>

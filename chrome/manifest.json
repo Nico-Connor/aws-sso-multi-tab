@@ -1,0 +1,24 @@
+{
+  "name": "AWS SSO Tools",
+  "version": "0.2",
+  "manifest_version": 3,
+  "description": "Adds the account name to your AWS console session when logged in with SSO, and lets you switch accounts without losing your place.",
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.console.aws.amazon.com/*"],
+      "js": ["content-script.js"]
+    }
+  ],
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
+  },
+  "permissions": [
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": ["https://*.console.aws.amazon.com/*"]
+}
